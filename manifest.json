@@ -1,7 +1,7 @@
 {
   "name": "TimeTracker",
   "description": "",
-  "details": "Time tracker [this repository](https://github.com/gebv/trello-powerups-timetracker).",
+  "details": "Time tracker [this repository](https://github.com/itworks24/trello-powerups-timetracker).",
   "author": "GEBV",
   "capabilities": [
     "board-buttons",
@@ -12,7 +12,7 @@
     "show-settings"
   ],
   "icon": {
-    "url": "./img/logo.png"
+    "url": "./img/logo-fox-head-less.png"
   },
   "connectors": {
     "iframe": {
