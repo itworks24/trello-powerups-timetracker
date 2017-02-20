@@ -9,6 +9,8 @@ t.render(function () {
 var authenticationSuccess = function (res) { console.log('Successful authentication', res, this); };
 var authenticationFailure = function () { console.log('Failed authentication'); };
 
+console.log('Start authentication');
+
 document.getElementById('BtnAuth').addEventListener('click', function () {
     return Trello.authorize({
         type: 'popup',

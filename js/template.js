@@ -56,11 +56,25 @@ var calcWorkLog = function(plistname, actions) {
 }
 var Promise = TrelloPowerUp.Promise;
 var getBadges = function (t, jQuery) {
-
+    if(Trello.token() == null){
+        return [{
+                dynamic: function () {
+                    return {
+                        title: 'Time tracked', // for detail badges only
+                        text: 'Waiting for authorization',
+                        // icon: icon, // for card front badges only
+                        // color: 'green',
+                        refresh: 5
+                    }
+                }
+            }]
+    }
     return t
         .card('id', 'name', 'shortLink')
         .then(function(ctx) {
             var key = 'card-'+ctx.id+'-estemite';
+            console.log('token:', Trello.token());
+            console.log('token:', localStorage.getItem("token"));
             return Promise.all([
                 t.get('board', 'shared', key),
                 Trello.get(
@@ -120,7 +134,7 @@ var getBadges = function (t, jQuery) {
             return [{
                 dynamic: function () {
                     return {
-                        // title: 'Detail Badge', // for detail badges only
+                        title: 'Time tracked', // for detail badges only
                         text: title(),
                         // icon: icon, // for card front badges only
                         // color: 'green',
@@ -131,8 +145,16 @@ var getBadges = function (t, jQuery) {
         })
 };
 
-var authenticationSuccess = function (res) { console.log('Successful authentication', res, this); };
-var authenticationFailure = function () { console.log('Failed authentication'); };
+var authenticationSuccess = function (res) 
+{ 
+    console.log('Successful authentication', res, this); 
+    console.log('token:', localStorage.getItem("token"));
+};
+
+var authenticationFailure = function () 
+{ 
+    console.log('Failed authentication');
+};
 
 Trello.authorize({
     type: 'popup',
@@ -184,7 +206,7 @@ TrelloPowerUp.initialize({
         return t.popup({
             title: 'My Auth Popup',
             url: 'authorize.html',
-            height: 140,
+            height: 240,
         })
     }
 })
