@@ -62,9 +62,9 @@ var getBadges = function (t, jQuery) {
                     return {
                         title: 'Time tracked', // for detail badges only
                         text: 'Waiting for authorization',
-                        // icon: icon, // for card front badges only
+                        icon: './img/timer.svg', // for card front badges only
                         // color: 'green',
-                        refresh: 5
+                        refresh: 10
                     }
                 }
             }]
@@ -73,8 +73,6 @@ var getBadges = function (t, jQuery) {
         .card('id', 'name', 'shortLink')
         .then(function(ctx) {
             var key = 'card-'+ctx.id+'-estemite';
-            console.log('token:', Trello.token());
-            console.log('token:', localStorage.getItem("token"));
             return Promise.all([
                 t.get('board', 'shared', key),
                 Trello.get(
@@ -101,12 +99,14 @@ var getBadges = function (t, jQuery) {
             if (estemite && estemite>0) {
                 estemiteSuffix += ' / ' + moment
                     .duration(~~estemite, "hours")
-                    .format('d [d] h [h] m [m]');
+                    .format('d [d] h [h]');
             }
 
             if (!isInProgress) {
                 return function(){
-                    var title = moment.duration(total, "milliseconds").format('d [d] h [h] m [m] s [s]');
+                    var duration = moment.duration(total, "milliseconds");
+                    var format = (duration.asMinutes() > 0 ? 'd [d] h [h] m [m]' : 's [s]');
+                    var title = duration.format(format);
 
                     if (estemiteSuffix.length > 0) {
                         title += estemiteSuffix
@@ -121,7 +121,9 @@ var getBadges = function (t, jQuery) {
             return function() {
                 total = ((new Date()) - (new Date(lastDate)));
 
-                var title = moment.duration(total, "milliseconds").format('d [d] h [h] m [m] s [s]');
+                var duration = moment.duration(total, "milliseconds");
+                var format = (duration.asMinutes() > 0 ? 'd [d] h [h] m [m]' : 's [s]');
+                var title = duration.format(format);
 
                 if (estemiteSuffix.length > 0) {
                     title += estemiteSuffix
@@ -134,9 +136,9 @@ var getBadges = function (t, jQuery) {
             return [{
                 dynamic: function () {
                     return {
-                        title: 'Time tracked', // for detail badges only
+                        title: 'Time tracker', // for detail badges only
                         text: title(),
-                        // icon: icon, // for card front badges only
+                        icon: './img/timer.svg', // for card front badges only
                         // color: 'green',
                         refresh: 60
                     }
