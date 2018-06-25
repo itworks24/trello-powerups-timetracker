@@ -6,23 +6,6 @@ moment.relativeTimeRounding(retainValue);
 var isFullLoaded = false;
 var data = {};
 
-var myregexp = /^([-+])?(\b[0-9]*\.?[0-9]+\b)/;
-var calcComments = function(actions) {
-    return _(actions)
-        .filter(function (item){
-            return item.type == 'commentCard' && (myregexp.test(item.data.text)) 
-        })
-        .map(function(item){
-            var match = myregexp.exec(item.data.text);
-            item.total = (match[1] =='+' ) ? parseFloat(match[2]) : - parseFloat(match[2]); 
-            return item.total
-        })
-        .reduce(function(r, v) {
-            var total = r + v;
-            return total   
-        }) * 3600000
-}
-
 var calcWorkLog = function(plistname, actions) {
 
     return _(actions)
@@ -105,16 +88,10 @@ var getBadges = function (t, jQuery) {
             var isInProgress = false;
             var lastDate = 0;
 
-            var comments = calcComments(actions);
-
             if (res) {
                 total = res.total;
                 isInProgress = res.tracked;
                 lastDate = res.date;
-            }
-
-            if(comments){
-                total += comments;
             }
 
             var estemiteSuffix = "";
