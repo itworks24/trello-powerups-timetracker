@@ -5,6 +5,23 @@ moment.relativeTimeRounding(retainValue);
 
 var isFullLoaded = false;
 var data = {};
+var cardsActions = {};
+
+var GetActions = function(id){
+    if(!(id in cardsActions)){
+        cardsActions[id] = Trello.get(
+                                        '/cards/' + id + '/actions/?fields=id,data,date,type&filter=createCard,updateCard,commentCard'
+                                    )
+    }
+    else{
+        cardsActions[id].concat(
+            Trello.get(
+                '/cards/' + id + '/actions/?fields=id,data,date,type&filter=createCard,updateCard,commentCard&actions_since=${cardsActions[id].slice(-1)[0].date}'
+            )
+        )    
+    }
+    return cardsActions[id];
+}
 
 var myregexp = /^([-+])?(\b[0-9]*\.?[0-9]+\b)/;
 var calcComments = function(actions) {
@@ -92,9 +109,7 @@ var getBadges = function (t, jQuery) {
             var key = 'card-'+ctx.id+'-estemite';
             return Promise.all([
                 t.get('board', 'shared', key),
-                Trello.get(
-                    '/cards/' + ctx.id + '/actions'
-                ),
+                GetActions(ctx.id),
                 ctx.id,
                 t.get('board', 'shared', 'progressListName')
             ])
